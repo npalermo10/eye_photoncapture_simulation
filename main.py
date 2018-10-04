@@ -5,6 +5,8 @@ import math
 from pymunk.vec2d import Vec2d
 from tools import Photon, Detector
 
+
+anim_done = False ## set True to skip animation
 pg.init()
 pg.font.init()
 myfont = pg.font.SysFont('Comic Sans MS', 30)
@@ -22,9 +24,9 @@ clock = pg.time.Clock()
 previousmillis = time.time()
 eye_radius = 100 
 eye_loc = (int(eye_radius/2), int(screen_height-eye_radius/2))
-line_width = 5
+line_width = 3
 
-angles = linspace(200, 270, 5) 
+angles = linspace(200, 270, 8) 
 def pair_angles(edges):
     return array([edges[:-1],edges[1:]]).T
 
@@ -41,7 +43,7 @@ photons = []
 
 screen_pig_coords = [Vec2d().unit().rotated_degrees(ang)*(eye_radius)*1.1 for ang in angles]
 
-anim_done = False
+
 while not anim_done: 
 # --- Main event loop
     
@@ -103,7 +105,7 @@ while not anim_done:
 pg.quit()
 
 loop = 0
-num_loops = 50
+num_loops = 5
 trial_data = np.zeros([num_loops, len(detectors)])
 while loop < num_loops:
     for d in detectors:
@@ -140,7 +142,7 @@ means = trial_data.mean(axis = 0)
 std = trial_data.std(axis = 0)
 
 plt.errorbar(arange(len(detectors))+1, means, yerr = std, marker = 'o', ms = 9.0, capsize = 2)
-plt.xticks([1,2,3,4], ["1", "2", "3", "4"])
+plt.xticks(arange(len(detectors))+1, arange(len(detectors))+1)
 plt.xlabel("detector")
 plt.ylabel("N photons")
 # clf()
