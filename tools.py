@@ -7,9 +7,7 @@ class Photon():
         self.screen = screen
         self.loc = Vec2d(loc)
         self.angle = angle
-        self.v = 5
-        self.crossing_s_p = False
-        
+        self.v = 7
 
     def move(self):
         vec = Vec2d().unit().rotated_degrees(self.angle) * self.v
@@ -22,7 +20,7 @@ class Detector():
     def __init__(self, boundaries):
         self.boundaries = np.array(boundaries)
         self.n_photons = 0
-        self.label_loc_vec = Vec2d().unit().rotated_degrees(-(self.boundaries.mean() + 5) ) 
+        self.label_loc_vec = Vec2d().unit().rotated_degrees((self.boundaries.mean() - 7) ) 
         
     def reset(self):
         self.n_photons = 0
