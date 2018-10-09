@@ -11,7 +11,7 @@ pg.init()
 pg.font.init()
 myfont = pg.font.SysFont('Comic Sans MS', 30)
 
-screen_width = 300
+screen_width = 500
 screen_height = 500
 
 screen = pg.display.set_mode((screen_width,screen_height))
@@ -26,7 +26,7 @@ eye_radius = 100
 eye_loc = (int(eye_radius/2), int(screen_height-eye_radius/2))
 line_width = 3
 
-angles = linspace(200, 270, 8) 
+angles = linspace(200, 270, 6) 
 def pair_angles(edges):
     return array([edges[:-1],edges[1:]]).T
 
@@ -35,25 +35,33 @@ detectors = []
 for pair in angle_pairs:
     detectors.append(Detector(pair))
     
-emitter_loc = (int(eye_loc[0]+eye_radius + 100), -screen_height*3)
+emitter_loc = (int(eye_loc[0]+eye_radius + 300),-screen_height)
 emitter_rad = 10
 emitter_v = 5
-emitter_release_n = 2
+emitter_release_n = 1
 photons = []
 
 screen_pig_coords = [Vec2d().unit().rotated_degrees(ang)*(eye_radius)*1.1 for ang in angles]
 
+mouse_control = False
 
 while not anim_done: 
 # --- Main event loop
     
-    for event in pg.event.get(): # User did something 
+    for event in pg.event.get(): # User did something
         turning=False
         local_thrust = False
         global_thrust = False
         rot_dir = False
         if pg.event.EventType == pg.QUIT: # If user clicked close
             done = True # Flag that we are done so we exit this loop
+        if (pg.key.get_pressed()[pg.K_RETURN] != 0):
+            mouse_control = not mouse_control
+        if (pg.key.get_pressed()[pg.K_BACKSPACE] != 0):
+            for d in detectors:
+                d.n_photons =0
+    if mouse_control:
+        emitter_loc = pg.mouse.get_pos()
 
 # --- Game logic should go here
     currentmillis=time.time()
@@ -71,7 +79,7 @@ while not anim_done:
         
     emitter_loc = (emitter_loc[0], emitter_loc[1]+emitter_v)
     for n_photon in arange(emitter_release_n):
-        photons.append(Photon(screen, emitter_loc, randint(0,180)))
+        photons.append(Photon(screen, emitter_loc, randint(0,359)))
 
     for p in photons:
         p.move()
@@ -105,7 +113,7 @@ while not anim_done:
 pg.quit()
 
 loop = 0
-num_loops = 5
+num_loops = 50
 trial_data = np.zeros([num_loops, len(detectors)])
 while loop < num_loops:
     for d in detectors:
@@ -145,6 +153,7 @@ plt.errorbar(arange(len(detectors))+1, means, yerr = std, marker = 'o', ms = 9.0
 plt.xticks(arange(len(detectors))+1, arange(len(detectors))+1)
 plt.xlabel("detector")
 plt.ylabel("N photons")
+plt.axhline(0, color = 'k')
 # clf()
 # plt.plot(arange(len(detectors))+1, photon_counts)
 # savefig('detect_vals.png', format= 'png')
