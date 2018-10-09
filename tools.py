@@ -7,7 +7,7 @@ class Photon():
         self.screen = screen
         self.loc = Vec2d(loc)
         self.angle = angle
-        self.v = 7
+        self.v =5
 
     def move(self):
         vec = Vec2d().unit().rotated_degrees(self.angle) * self.v
